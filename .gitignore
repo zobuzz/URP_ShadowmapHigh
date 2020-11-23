@@ -14,7 +14,6 @@
 *.svd
 /Assets/StreamingAssets/*
 !/Assets/StreamingAssets/.gitkeep
-/ProjectSettings/ProjectVersion.txt
 /Logs/*
 /UnityPackageManager/*
 *.DS_Store
