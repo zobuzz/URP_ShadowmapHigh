@@ -1,6 +1,6 @@
 // Made with Amplify Shader Editor
 // Available at the Unity Asset Store - http://u3d.as/y3X 
-Shader "ShadowTest"
+Shader "OnlyDepthShadowTest"
 {
 	Properties
 	{
@@ -274,19 +274,22 @@ Shader "ShadowTest"
 
 				shadowVertex.z = (shadowVertex.z - _DepthBias);
 
-				float4 shadow = tex2D(_CustomLightShadowmapTexture, shadowVertex.xy);
-				float shadowRatio = clamp((2.0 - exp(
-					((shadowVertex.z - dot(shadow, float4(1.0, 0.00392157, 1.53787e-05, 6.03086e-08))) * 2048)
-					)), 0.0, 1.0);
+				float t = SAMPLE_TEXTURE2D_SHADOW(_ZorroShadowmapTexture, sampler__ZorroShadowmapTexture, shadowVertex.xyz);
+				color.rgb = lerp(color.rgb * _ShadowColor, color.rgb, 1 - t);
 
-				shadowVertex.xy = (shadowVertex.xy + float2(INV_2048, INV_2048));
-				shadow = tex2D(_CustomLightShadowmapTexture, shadowVertex.xy);
-				shadowRatio = (shadowRatio + clamp((2.0 -
-					exp(((shadowVertex.z - dot(shadow, float4(1.0, 0.00392157, 1.53787e-05, 6.03086e-08))) * 2048))
-					), 0.0, 1.0));
+				//float4 shadow = tex2D(_CustomLightShadowmapTexture, shadowVertex.xy);
+				//float shadowRatio = clamp((2.0 - exp(
+				//	((shadowVertex.z - dot(shadow, float4(1.0, 0.00392157, 1.53787e-05, 6.03086e-08))) * 2048)
+				//	)), 0.0, 1.0);
 
-				shadowRatio *= 0.5f;
-				color.rgb = lerp(color.rgb * _ShadowColor, color.rgb, shadowRatio);
+				//shadowVertex.xy = (shadowVertex.xy + float2(INV_2048, INV_2048));
+				//shadow = tex2D(_CustomLightShadowmapTexture, shadowVertex.xy);
+				//shadowRatio = (shadowRatio + clamp((2.0 -
+				//	exp(((shadowVertex.z - dot(shadow, float4(1.0, 0.00392157, 1.53787e-05, 6.03086e-08))) * 2048))
+				//	), 0.0, 1.0));
+
+				//shadowRatio *= 0.5f;
+				//color.rgb = lerp(color.rgb * _ShadowColor, color.rgb, shadowRatio);
 
 				return color;
 			}
@@ -393,7 +396,7 @@ Shader "ShadowTest"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/ShaderGraphFunctions.hlsl"
 			#include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
 
-			
+			#include "Assets/CustomShadowmap/CustomShadows.hlsl"
 
 			struct VertexInput
 			{
@@ -466,6 +469,14 @@ Shader "ShadowTest"
 					vertexInput.positionCS = clipPos;
 					o.shadowCoord = GetShadowCoord( vertexInput );
 				#endif
+
+				//add by sj
+				clipPos = mul(_ZorroShadowMatrix, float4(positionWS.xyz, 1.0));
+				//change z from openGL [-1,1] , to [0,1]
+				clipPos.z = clipPos.z / clipPos.w * 0.5 + 0.5;
+				//no revert_z
+				//clipPos.z = 1 - clipPos.z;S
+				
 				o.clipPos = clipPos;
 				return o;
 			}
