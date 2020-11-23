@@ -1,2 +1,2 @@
 # URP_ShadowmapHigh
-High Resolution VSM Shadowmap
+High Resolution Exponential Shadowmap
