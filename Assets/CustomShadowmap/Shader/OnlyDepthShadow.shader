@@ -273,23 +273,14 @@ Shader "OnlyDepthShadowTest"
 				float3 shadowVertex = (((IN.shadowVertex.xyz / IN.shadowVertex.w) * 0.5) + 0.5);
 
 				shadowVertex.z = (shadowVertex.z - _DepthBias);
+				shadowVertex.z = 1 - shadowVertex.z;
+
+				//flip Y for sample_CMP ,TODO platform dependent
+				shadowVertex.y = 1 - shadowVertex.y;
 
 				float t = SAMPLE_TEXTURE2D_SHADOW(_ZorroShadowmapTexture, sampler__ZorroShadowmapTexture, shadowVertex.xyz);
-				color.rgb = lerp(color.rgb * _ShadowColor, color.rgb, 1 - t);
+				color.rgb = lerp(color.rgb * _ShadowColor, color.rgb, t);
 
-				//float4 shadow = tex2D(_CustomLightShadowmapTexture, shadowVertex.xy);
-				//float shadowRatio = clamp((2.0 - exp(
-				//	((shadowVertex.z - dot(shadow, float4(1.0, 0.00392157, 1.53787e-05, 6.03086e-08))) * 2048)
-				//	)), 0.0, 1.0);
-
-				//shadowVertex.xy = (shadowVertex.xy + float2(INV_2048, INV_2048));
-				//shadow = tex2D(_CustomLightShadowmapTexture, shadowVertex.xy);
-				//shadowRatio = (shadowRatio + clamp((2.0 -
-				//	exp(((shadowVertex.z - dot(shadow, float4(1.0, 0.00392157, 1.53787e-05, 6.03086e-08))) * 2048))
-				//	), 0.0, 1.0));
-
-				//shadowRatio *= 0.5f;
-				//color.rgb = lerp(color.rgb * _ShadowColor, color.rgb, shadowRatio);
 
 				return color;
 			}
@@ -474,8 +465,8 @@ Shader "OnlyDepthShadowTest"
 				clipPos = mul(_ZorroShadowMatrix, float4(positionWS.xyz, 1.0));
 				//change z from openGL [-1,1] , to [0,1]
 				clipPos.z = clipPos.z / clipPos.w * 0.5 + 0.5;
-				//no revert_z
-				//clipPos.z = 1 - clipPos.z;S
+				//revert_z for depth precision
+				clipPos.z = 1 - clipPos.z;
 				
 				o.clipPos = clipPos;
 				return o;

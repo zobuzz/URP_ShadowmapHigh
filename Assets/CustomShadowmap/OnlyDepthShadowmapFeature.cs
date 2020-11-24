@@ -90,7 +90,9 @@ public class OnlyDepthShadowmapFeature : ScriptableRendererFeature
             //m_MainLightShadowmapTexture.filterMode = FilterMode.Point;
             //m_MainLightShadowmapTexture.wrapMode = TextureWrapMode.Clamp;
 
-            m_MainLightShadowmapTexture = ShadowUtils.GetTemporaryShadowTexture(s_shadowmap_size, s_shadowmap_size, k_ShadowmapBufferBits);
+            m_MainLightShadowmapTexture = RenderTexture.GetTemporary(s_shadowmap_size, s_shadowmap_size, k_ShadowmapBufferBits, RenderTextureFormat.Shadowmap);
+            m_MainLightShadowmapTexture.filterMode =  FilterMode.Bilinear;
+            m_MainLightShadowmapTexture.wrapMode = TextureWrapMode.Clamp;
 
             ConfigureTarget(new RenderTargetIdentifier(m_MainLightShadowmapTexture));
             //ConfigureClear(ClearFlag.All, Color.white);

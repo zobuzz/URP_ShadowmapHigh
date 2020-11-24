@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: UniversalRenderPipelineAsset_Renderer
   m_EditorClassIdentifier: 
   m_RendererFeatures:
-  - {fileID: 2897253285490787083}
-  m_RendererFeatureMap: 0b03034a831c3528
+  - {fileID: 5204604099262475877}
+  m_RendererFeatureMap: 65ee1465da773a48
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   shaders:
     blitPS: {fileID: 4800000, guid: c17132b1f77d20942aa75f8429c0f8bc, type: 3}
@@ -37,7 +37,7 @@ MonoBehaviour:
     failOperation: 0
     zFailOperation: 0
   m_ShadowTransparentReceive: 1
---- !u!114 &2897253285490787083
+--- !u!114 &5204604099262475877
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,13 +46,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c3f4248a41a14a40b85048a58a945d0, type: 3}
-  m_Name: NewCustomShadowmapFeature
+  m_Script: {fileID: 11500000, guid: 93d6146e2fe0ac54fbffe31da1c9efda, type: 3}
+  m_Name: NewOnlyDepthShadowmapFeature
   m_EditorClassIdentifier: 
   m_Active: 1
   settings:
-    ShadowBias: 0.0004
-    ShadowColor: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 1}
+    ShadowBias: 0.00015
+    ShadowColor: {r: 0.4811321, g: 0.37505168, b: 0.33815417, a: 1}
     OpaqueLayerMask:
       serializedVersion: 2
       m_Bits: 256
