@@ -273,11 +273,18 @@ Shader "OnlyDepthShadowTest"
 				float3 shadowVertex = (((IN.shadowVertex.xyz / IN.shadowVertex.w) * 0.5) + 0.5);
 
 				shadowVertex.z = (shadowVertex.z - _DepthBias);
+			#if UNITY_REVERSED_Z //DirectX 
 				shadowVertex.z = 1 - shadowVertex.z;
+			#else
+				
+			#endif
+				
 
 				//flip Y for sample_CMP ,TODO platform dependent
+			#if UNITY_UV_STARTS_AT_TOP //DirectX
 				shadowVertex.y = 1 - shadowVertex.y;
-
+			#endif
+				
 				float t = SAMPLE_TEXTURE2D_SHADOW(_ZorroShadowmapTexture, sampler__ZorroShadowmapTexture, shadowVertex.xyz);
 				color.rgb = lerp(color.rgb * _ShadowColor, color.rgb, t);
 
@@ -366,7 +373,8 @@ Shader "OnlyDepthShadowTest"
 
 			ZWrite On
 			ZTest LEqual
-
+			Cull Off
+			
 			HLSLPROGRAM
 			#pragma multi_compile_instancing
 			#pragma multi_compile _ LOD_FADE_CROSSFADE
@@ -464,9 +472,13 @@ Shader "OnlyDepthShadowTest"
 				//add by sj
 				clipPos = mul(_ZorroShadowMatrix, float4(positionWS.xyz, 1.0));
 				//change z from openGL [-1,1] , to [0,1]
+			#if UNITY_REVERSED_Z
 				clipPos.z = clipPos.z / clipPos.w * 0.5 + 0.5;
 				//revert_z for depth precision
 				clipPos.z = 1 - clipPos.z;
+			#else				
+			#endif
+				
 				
 				o.clipPos = clipPos;
 				return o;
